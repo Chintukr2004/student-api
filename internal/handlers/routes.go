@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"encoding/json"
 	"net/http"
 
 	"github.com/Chintukr2004/student-api/internal/config"
@@ -28,6 +29,20 @@ func Routes(db *sql.DB, cfg config.Config) http.Handler {
 
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("OK"))
+	})
+
+	r.Group(func(r chi.Router) {
+		r.Use(middleware.Auth(cfg.JWT.Secret))
+
+		r.Get("/me", func(w http.ResponseWriter, r *http.Request) {
+			userID := r.Context().Value(middleware.UserIDKey)
+			role := r.Context().Value(middleware.RoleKey)
+
+			json.NewEncoder(w).Encode(map[string]interface{}{
+				"user_id": userID,
+				"role":    role,
+			})
+		})
 	})
 
 	return r
