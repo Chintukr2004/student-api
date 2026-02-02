@@ -9,6 +9,9 @@ type Config struct {
 	DB   struct {
 		DSN string
 	}
+	JWT struct {
+		Secret string
+	}
 }
 
 func Load() Config {
@@ -19,6 +22,7 @@ func Load() Config {
 		"DB_DSN",
 		"postgres://postgres:chintukr1904@@localhost:5432/studentdb?sslmode=disable",
 	)
+	cfg.JWT.Secret = getEnv("JWT_SECRET", "dev-secret-change=me")
 	return cfg
 }
 

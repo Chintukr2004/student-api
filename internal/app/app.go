@@ -27,7 +27,7 @@ func New(cfg config.Config) (*App, error) {
 }
 
 func (a *App) Run() error {
-	router := handlers.Routes(a.DB)
+	router := handlers.Routes(a.DB, a.Config)
 
 	log.Printf("starting server on :%s", a.Config.Port)
 	return http.ListenAndServe(":"+a.Config.Port, router)

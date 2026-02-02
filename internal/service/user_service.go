@@ -13,6 +13,28 @@ type UserService struct {
 	Repo *repository.UserRepository
 }
 
+func (s *UserService) Login(
+	ctx context.Context,
+	email, password, jwtSecret string,
+) (string, error) {
+
+	user, err := s.Repo.GetByEmail(ctx, email)
+	if err != nil {
+		return "", errors.New("invalid credentials")
+	}
+
+	if err := utils.CheckPassword(user.PasswordHash, password); err != nil {
+		return "", errors.New("invalid credentials")
+	}
+
+	token, err := utils.GenerateToken(user.ID, "user", jwtSecret)
+	if err != nil {
+		return "", err
+	}
+
+	return token, nil
+}
+
 func NewUserService(repo *repository.UserRepository) *UserService {
 	return &UserService{Repo: repo}
 }
