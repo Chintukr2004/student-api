@@ -38,7 +38,7 @@ func (r *UserRepository) Create(ctx context.Context, user *models.User) error {
 
 func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*models.User, error) {
 	query := `
-		SELECT id, name, email, password_hash, created_at
+		SELECT id, name, email, role, password_hash, created_at
 		FROM users
 		WHERE email = $1
 	`
@@ -46,7 +46,7 @@ func (r *UserRepository) GetByEmail(ctx context.Context, email string) (*models.
 	var user models.User
 
 	err := r.DB.QueryRowContext(ctx, query, email).
-		Scan(&user.ID, &user.Name, &user.Email, &user.PasswordHash, &user.CreatedAt)
+		Scan(&user.ID, &user.Name, &user.Email, &user.Role, &user.PasswordHash, &user.CreatedAt)
 
 	if err != nil {
 		return nil, err

@@ -22,7 +22,7 @@ func GenerateToken(userID int64, role, secret string) (string, error) {
 		},
 	}
 
-	// 🔑 HS256 uses STRING secret
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	return token.SignedString([]byte(secret))
